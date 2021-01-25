@@ -13,8 +13,8 @@
     "categories": [],
     "contents": "\r\n\r\n\r\n\r\n",
     "preview": {},
-    "last_modified": "2021-01-24T21:06:33-05:00",
-    "input_file": "welcome.utf8.md"
+    "last_modified": "2021-01-24T21:06:34-05:00",
+    "input_file": {}
   },
   {
     "path": "posts/2021-01-24-what-does-housing-look-like-in-different-philly-neighborhoods/",
@@ -30,7 +30,7 @@
     "categories": [],
     "contents": "\r\nA few years back, the Washington Post published a visualization of Census data showing differences in housing in different large cities across the US. This was updated by Munson’s City, and both reports show the stunning abundance of single-family housing in American cities. Nationally, more than 60% of housing is detached single-family housing, and in more than half of the 50 largest US cities, single-family housing prevails as the dominant home type.\r\nWhile cities such as New York and Boston are mostly made up of multi-family housing (in both cities, less than 20% of housing is single-family), data from Philadelphia show that it is truly a city of rowhomes. Philly and Baltimore are the only two cities analyzed with a majority of housing being single-family attached, or rowhomes. A prevalence of single-family housing in cities has implications in housing affordability, and many point to a lack of mid-density housing (or, the “Missing Middle”) as a threat to walkability and affordability.\r\nRecognizing Philly as an outlier in the WaPo article, I decided to take a closer look at Philadelphia housing at the neighborhood scale. I re-created their visualization using US Census Bureau American Community Survey (2015-2019) data with Azavea’s definitions of Philly neighborhoods (though I realize these boundaries might be fluid and/or incorrect to some). In the figure below, I show the 20 neighborhoods with the least single-family housing and the 20 neighborhoods with the most single-family housing. In between these two groups of extremes, you’ll find citywide numbers where, according to the most recent ACS numbers, about 65% of housing is single-family housing (but a relatively dense stock of single-family housing!).\r\n\r\n\r\n\r\nIt’ll be interesting to take another look at this in a couple years, as I suspect data from some neighborhoods will reflect an emphasis on multi-family housing in development, and maybe some in the “missing middle.”\r\n\r\n\r\n\r\n",
     "preview": "posts/2021-01-24-what-does-housing-look-like-in-different-philly-neighborhoods/what-does-housing-look-like-in-different-philly-neighborhoods_files/figure-html5/unnamed-chunk-2-1.png",
-    "last_modified": "2021-01-24T21:11:26-05:00",
-    "input_file": "what-does-housing-look-like-in-different-philly-neighborhoods.utf8.md"
+    "last_modified": "2021-01-24T21:11:27-05:00",
+    "input_file": {}
   }
 ]
