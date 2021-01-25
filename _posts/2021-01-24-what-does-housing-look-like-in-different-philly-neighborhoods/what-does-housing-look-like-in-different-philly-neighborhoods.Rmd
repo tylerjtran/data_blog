@@ -1,9 +1,9 @@
 ---
 title: "What does housing look like in different Philly neighborhoods?"
-description: 
+description: |
+  A look at what residential buildings look like across Philadelphia, from detached single family homes to multi-unit high-rise apartments.
 author:
   - name: Tyler Tran
-    url: https://example.com/norajones
 date: 03-02-2019
 output:
   distill::distill_article:
