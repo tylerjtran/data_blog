@@ -5,14 +5,14 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "305897266",
     "id" : "73B9993",
-    "lastKnownWriteTime" : 1611539164,
-    "last_content_update" : 1611539164,
+    "lastKnownWriteTime" : 1611617497,
+    "last_content_update" : 1611617497787,
     "path" : "~/projects/data_blog/index.Rmd",
     "project_path" : "index.Rmd",
     "properties" : {
-        "cursorPosition" : "5,0",
+        "cursorPosition" : "1,9",
         "scrollLine" : "0"
     },
     "read_only" : false,

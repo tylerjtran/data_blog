@@ -1,5 +1,5 @@
 ---
-title: "Hi, I'm Tyler"
+title: ''
 site: distill::distill_website
 listing: posts
 ---

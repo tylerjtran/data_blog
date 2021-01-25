@@ -7,16 +7,24 @@ author:
 date: 03-02-2019
 output:
   distill::distill_article:
+    code_folding: true
     self_contained: false
 draft: false
 ---
 
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r, include=F}
+
+A few years back, the Washington Post published a visualization of Census data showing differences in housing in different large cities across the US. This was updated by Munson’s City, and both reports show the stunning abundance of single-family housing in American cities. Nationally, more than 60% of housing is detached single-family housing, and in more than half of the 50 largest US cities, single-family housing prevails as the dominant home type.
+
+While cities such as New York and Boston are mostly made up of multi-family housing (in both cities, less than 20% of housing is single-family), data from Philadelphia show that it is truly a city of rowhomes. Philly and Baltimore are the only two cities analyzed with a majority of housing being single-family attached, or rowhomes. A prevalence of single-family housing in cities has implications in housing affordability, and many point to a lack of mid-density housing (or, the “Missing Middle”) as a threat to walkability and affordability.
+
+Recognizing Philly as an outlier in the WaPo article, I decided to take a closer look at Philadelphia housing at the neighborhood scale. I re-created their visualization using US Census Bureau American Community Survey (2015-2019) data with Azavea’s definitions of Philly neighborhoods (though I realize these boundaries might be fluid and/or incorrect to some). In the figure below, I show the 20 neighborhoods with the least single-family housing and the 20 neighborhoods with the most single-family housing. In between these two groups of extremes, you'll find citywide numbers where, according to the most recent ACS numbers, about 65% of housing is single-family housing (but a relatively dense stock of single-family housing!).
+
+```{r, layout='l-body-outset', fig.width=10.5, fig.height=7.5, fig.retina=1, out.width='100%', message=F, warning=F, echo=F, results = 'hide'}
 # Housing type
 # Jan 2021 -- Re-writing code from March 2019
 
@@ -139,15 +147,8 @@ str_pad_custom <- function(labels){
 my_palette <- rev(c('#e3ced3', '#aa82a8', '#6da18f', '#335b8e', 
                 '#b7dbdb', '#faed55', '#687e4f', '#424242'))
 bold_citywide <- c(rep('plain', 20), 'bold.italic', rep('plain', 20))
-```
 
-A few years back, the Washington Post published a visualization of Census data showing differences in housing in different large cities across the US. This was updated by Munson’s City, and both reports show the stunning abundance of single-family housing in American cities. Nationally, more than 60% of housing is detached single-family housing, and in more than half of the 50 largest US cities, single-family housing prevails as the dominant home type.
-
-While cities such as New York and Boston are mostly made up of multi-family housing (in both cities, less than 20% of housing is single-family), data from Philadelphia show that it is truly a city of rowhomes. Philly and Baltimore are the only two cities analyzed with a majority of housing being single-family attached, or rowhomes. A prevalence of single-family housing in cities has implications in housing affordability, and many point to a lack of mid-density housing (or, the “Missing Middle”) as a threat to walkability and affordability.
-
-Recognizing Philly as an outlier in the WaPo article, I decided to take a closer look at Philadelphia housing at the neighborhood scale. I re-created their visualization using US Census Bureau American Community Survey (2015-2019) data with Azavea’s definitions of Philly neighborhoods (though I realize these boundaries might be fluid and/or incorrect to some). In the figure below, I show the 20 neighborhoods with the least single-family housing and the 20 neighborhoods with the most single-family housing. In between these two groups of extremes, you'll find citywide numbers where, according to the most recent ACS numbers, about 65% of housing is single-family housing (but a relatively dense stock of single-family housing!).
-
-```{r, layout='l-body-outset', fig.width=10.5, fig.height=7.5, fig.retina=1, out.width='100%'}
+# Make plot of housing types by neighborhood
 p_housing_types %>%
   ggplot(aes(fill = category, y = p_category, x = reorder(mapname, -total_p_sfh))) +
   geom_bar(position = 'stack', stat = 'identity') +
