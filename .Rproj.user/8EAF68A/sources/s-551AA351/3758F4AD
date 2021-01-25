@@ -5,13 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1888563568",
+    "hash" : "0",
     "id" : "3758F4AD",
-    "lastKnownWriteTime" : 1611539164,
-    "last_content_update" : 1611539164,
+    "lastKnownWriteTime" : 1611540107,
+    "last_content_update" : 1611540107037,
     "path" : "~/projects/data_blog/_posts/welcome/welcome.Rmd",
     "project_path" : "_posts/welcome/welcome.Rmd",
     "properties" : {
+        "cursorPosition" : "3,34",
+        "scrollLine" : "0"
     },
     "read_only" : false,
     "read_only_alternatives" : [
