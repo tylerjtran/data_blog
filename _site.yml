@@ -1,0 +1,12 @@
+name: "data_blog"
+title: "Hi, I'm Tyler"
+description: |
+  Hi, I'm Tyler
+output_dir: "docs"
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+output: distill::distill_article
