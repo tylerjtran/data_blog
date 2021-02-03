@@ -245,7 +245,7 @@ I stumbled across a super interesting master's thesis by Mathew Grubel titled ["
 ```{r}
 # gif: Temporal aspect of fireplaces that currently exist
 
-knitr::include_graphics('../../../philly_analyses/fireplaces/fireplaces.gif')
+knitr::include_graphics('fireplaces.gif')
 ```
 
 On all the fireplace maps I made, Northwest Philly stood out to me because it has so many fireplaces compared to other parts of the city. Mathew Grubel's thesis gave me a few ideas why that might be. Grubel talks about German influence in architecture in Philadelphia (and across Pennsylvania). "German closed stoves" became a common type of fireplace in Philadelphia, especially in the northwest around Germantown and Chestnut Hill where many German and Dutch families lived from the 17th Century onward.
@@ -358,7 +358,7 @@ In a nod to Grubel's thesis on the history of domestic heating in Philadelphia, 
 
 ```{r, out.width='100%'}
 
-knitr::include_graphics('../../../philly_analyses/fireplaces/heating_by_decade.png')
+knitr::include_graphics('heating_by_decade.png')
 ```
 
 
