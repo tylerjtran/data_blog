@@ -356,11 +356,11 @@ neighborhood_heatmap %>%
 
 In a nod to Grubel's thesis on the history of domestic heating in Philadelphia, I re-created one of his graphs using somewhat similar current-day data. The top graph below is a plot from his 1998 thesis showing the primary form of heating for homes by decade. My graph underneath it isn't an exact update: rather than longitudinal data, the decades on my graph represent the decade of a house's construction, and the houses included are only those that currently exist in 2021. 
 
-![](heating_by_decade.png)
 
-```{r, out.width='90%'}
 
-# knitr::include_graphics('heating_by_decade.png')
+```{r, out.width='88%'}
+
+knitr::include_graphics('heating_by_decade.png')
 ```
 
 
