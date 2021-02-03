@@ -360,7 +360,7 @@ In a nod to Grubel's thesis on the history of domestic heating in Philadelphia, 
 
 ```{r, out.width='88%'}
 
-knitr::include_graphics('heating_by_decade.png')
+knitr::include_graphics('heating_by_decade_phl.png')
 ```
 
 
