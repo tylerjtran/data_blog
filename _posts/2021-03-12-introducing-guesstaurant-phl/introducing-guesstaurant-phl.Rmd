@@ -26,5 +26,5 @@ I've created a Shiny app in R to make a little game out of the restaurant hunt! 
 
 During a year when many people haven't been eating at restaurants and many restaurant workers have been struggling, I made Guesstaurant PHL because I think it's fun and to provide a way for people to donate to restaurant workers if they're able.
 
-Try it out at [guesstaurantphl.com](guesstaurantphl.com), and let me know what you think!
+Try it out at [guesstaurantphl.com](http://guesstaurantphl.com), and let me know what you think!
 
