@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```{r}
 
-knitr::include_graphics('guesstaurant.png')
+knitr::include_graphics('guesstaurant.PNG')
 ```
 
 One of the things I've been missing a lot during the pandemic is eating in restaurants. Sometimes I find myself panning through Google Maps just reminding myself of all the great spots around me. Luckily, many of them do takeout, but it's not quite the same.
