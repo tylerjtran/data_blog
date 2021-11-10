@@ -1,0 +1,162 @@
+---
+title: "Streeteries for me but not for thee?"
+description: |
+  Who benefits most from the outdoor dining bill in City Council?
+author:
+  - name: Tyler Tran
+date: 11-09-2021
+output:
+  distill::distill_article:
+    code_folding: true
+    self_contained: false
+draft: false
+---
+
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+During the pandemic, many Philadelphia restaurants have relied on outdoor dining to stay afloat. A current bill that was advanced by a City Council committee [seeks to make outdoor dining permanent in certain neighborhoods of the city](https://www.inquirer.com/news/streeteries-outdoor-dining-council-prerogative-food-20211109.html). These "streeteries" would be permitted mostly on existing commercial corridors and in business improvement districts (BIDs).
+
+There is one exception to the piecemeal geographic bounds of where streeteries would be permitted under the bill: The entire 3rd Council District, represented by Councilmember Jamie Gauthier, would permit streeteries.
+
+So, if we consider streeteries a benefit to local businesses and residents (note: [not everyone considers them a benefit](https://www.inquirer.com/opinion/commentary/streeteries-outdoor-dining-allan-domb-disability-20211006.html)), who would benefit most from this bill?
+
+I looked two demographic variables: median household income and % of residents who are Black. In the graph below, each dot represents a census block group in Philadelphia. Purple dots represent census block groups where streeteries would be permitted under the bill, and gray dots represent census areas where no streeteries would be automatically permitted. This graph does not include census areas in the 3rd Council District; we'll get to that next.
+
+
+```{r, layout='l-body-outset', fig.width=8.2, fig.height=5.07, fig.retina=1, out.width='100%', message=F, warning=F, echo=F, results = 'hide'}
+
+library(tidyverse); library(sf); library(tidycensus); library(showtext)
+
+census_api_key(Sys.getenv('census_api'))
+
+#########################################################################
+# Set up fonts
+
+font_add_google('Merriweather')
+font_add_google('Source Sans Pro', 'ssp')
+
+showtext_auto()
+
+font_theme <- theme(
+  plot.title = element_text(family = 'Merriweather', face = 'bold'),
+  plot.subtitle = element_text(family = 'ssp'),
+  axis.text = element_text(family = 'ssp'),
+  axis.title = element_text(family = 'ssp'),
+  legend.text = element_text(family = 'ssp'),
+  plot.caption = element_text(family = 'ssp', color = 'darkgray')
+)
+#########################################################################
+
+
+ccd <- st_read('https://opendata.arcgis.com/datasets/95366b115d93443eae4cc6f498cb3ca3_0.geojson') %>%
+  select(name = NAME)
+
+third_district <- st_read('https://opendata.arcgis.com/datasets/9298c2f3fa3241fbb176ff1e84d33360_0.geojson') %>%
+  mutate(name = '3rd District') %>%
+  filter(DISTRICT == 3) %>%
+  select(name)
+
+
+# Create a polygon sf object based on lat/long coords
+make_polygon <- function(df, area_name){
+  df %>%
+    group_by(zone) %>%
+    st_as_sf(coords = c('lng', 'lat'), crs = st_crs(ccd)) %>%
+    summarise(geometry = st_combine(geometry)) %>%
+    st_cast('POLYGON') %>%
+    mutate(name = area_name)
+}
+
+
+streeteries <- read_csv('streeteries_zones.csv') %>%
+  make_polygon(area_name = 'allowed') %>%
+  bind_rows(ccd) %>%
+  bind_rows(third_district)
+
+
+acs <- get_acs(geography = 'block group', 
+               variables = c("B19013_001", 'B02001_003', 'B02001_001', 'B17001_002', 'B17001_001'), 
+               county = 'Philadelphia',
+               state = 'PA', 
+               year = 2019,
+               geometry = T) %>%
+  group_by(GEOID) %>%
+  summarise(p_black = estimate[variable == 'B02001_003']/estimate[variable == 'B02001_001'],
+            p_below_poverty = estimate[variable == 'B17001_002']/estimate[variable == 'B17001_001'],
+            med_income = estimate[variable == 'B19013_001']) %>%
+  st_transform(crs = st_crs(streeteries))
+
+allowed_streeteries <- acs %>%
+  st_join(streeteries, join = st_intersects) %>%
+  mutate(streeteries_allowed = ! is.na(name),
+         streeteries_cat = case_when(
+           name == '3rd District' ~ '3rd District',
+           streeteries_allowed == T ~ 'Allowed',
+           streeteries_allowed == F ~ 'Not automatically allowed'
+         ))
+
+ggplot() +
+  geom_point(data = allowed_streeteries %>% filter(streeteries_cat == 'Not automatically allowed'),
+             aes(x = med_income, y = p_black),
+             size = 1.5, alpha = 0.5, color = 'darkgray') +
+  geom_point(data = allowed_streeteries %>% filter(streeteries_cat == 'Allowed'),
+             aes(x = med_income, y = p_black),
+             size = 1.5, color = '#822DCD') +
+  annotate('text', x = 170000, y = 0.3,
+           label = 'Purple dots represent\ncensus areas where streeteries\nare permitted under the bill',
+           size = 3.5, family = 'ssp') +
+  geom_curve(aes(x = 170000, y = 0.21, xend = 188000, yend = 0.08), curvature = 0.3,
+             arrow = arrow(type = 'closed', length = unit(0.1, 'in'))) +
+  labs(title = 'Without the 3rd District "blanket approval," neighborhoods with higher incomes\nand fewer Black residents benefit most from the proposed streeteries bill',
+       subtitle = 'Excluding 3rd Council District Blanket Approval',
+       x = 'Median Household Income',
+       y = '% of Residents Who Are Black') +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_continuous(labels = scales::dollar) +
+  theme(plot.title = element_text(face = 'bold'),
+        legend.position = 'none',
+        panel.background = element_rect(fill = '#F6F6F7'),
+        panel.grid = element_blank(),
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
+  font_theme
+```
+
+Without Jamie Gauthier's "blanket approval" in the 3rd Council District, the streetery approval is limited almost exclusively to neighborhoods with higher median incomes with fewer Black residents.
+
+Now, let's take a look at what the same graph looks like when we include census areas in from the 3rd District:
+
+```{r, layout='l-body-outset', fig.width=8.2, fig.height=5.07, fig.retina=1, out.width='100%', message=F, warning=F, echo=F, results = 'hide'}
+
+ggplot() +
+  geom_point(data = allowed_streeteries %>% filter(streeteries_cat == 'Not automatically allowed'),
+             aes(x = med_income, y = p_black),
+             size = 1.5, alpha = 0.5, color = 'darkgray') +
+  geom_point(data = allowed_streeteries %>% filter(streeteries_cat %in% c('Allowed', '3rd District')),
+             aes(x = med_income, y = p_black),
+             size = 1.5, color = '#822DCD') +
+  annotate('text', x = 170000, y = 0.3,
+           label = 'Purple dots represent\ncensus areas where streeteries\nare permitted under the bill',
+           size = 3.5, family = 'ssp') +
+  geom_curve(aes(x = 170000, y = 0.21, xend = 188000, yend = 0.08), curvature = 0.3,
+             arrow = arrow(type = 'closed', length = unit(0.1, 'in'))) +
+  labs(title = 'Because of the 3rd District "blanket approval," approval for streeteries is not\nlimited to higher-income neighborhoods',
+       x = 'Median Household Income',
+       y = '% of Residents Who Are Black') +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_continuous(labels = scales::dollar) +
+  theme(plot.title = element_text(face = 'bold'),
+        legend.position = 'none',
+        panel.background = element_rect(fill = '#F6F6F7'),
+        panel.grid = element_blank(),
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
+  font_theme
+
+```
+
+With the 3rd District areas included, the streeteries bill looks like it will permit outdoor dining in a more equitable manner. However, it's only because of that "blanket approval" in the 3rd District that those dots in the top left of the graph are purple.
