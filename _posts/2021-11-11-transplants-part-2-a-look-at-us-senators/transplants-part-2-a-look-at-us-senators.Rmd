@@ -1,0 +1,216 @@
+---
+title: "Transplants, part 2: A look at US Senators"
+description: |
+  Are most US Senators originally from the states they represent?
+author:
+  - name: Tyler Tran
+date: 11-11-2021
+output:
+  distill::distill_article:
+    code_folding: true
+    self_contained: false
+draft: false
+---
+
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+I recently [posted about transplants in different US cities,](https://tylerjtran.github.io/data_blog/posts/2021-11-06-im-from-here-a-look-at-transplants/) with a deeper look at Philadelphia. That got me wondering if the people who represent us in Congress tend to be transplants, or if they're "born and raised" in their states.
+
+To get a sense of where these politicians were from, I scraped data from Wikipedia on birthplaces of US Senators. I know many people would say that their birthplace isn't necessarily where they're from -- for example, I was born in Maine, but I'd say I'm from North Carolina -- but I figured birthplace info would be much easier to pull. I scraped data from today (the 117th Congress) back to the 86th Congress, which started in 1959. One small caveat: if multiple people held a single senate seat over the course of a two-year congress, I only included the first person. 
+
+The map below shows the proportion of US Senators who were born in the states they represent. Overall, there were fewer "carpetbaggers" than I would've expected: about 62% of the 472 senators I recorded were born in the states they represent in the legislature.
+
+
+```{r, layout='l-body-outset', fig.width=7.43, fig.height=5.22, fig.retina=1, out.width='100%', message=F, warning=F, echo=F, results = 'hide'}
+
+library(lubridate); library(tidyverse); library(rvest); library(showtext); library(statebins)
+
+#########################################################################
+# Set up fonts
+
+font_add_google('Merriweather')
+font_add_google('Source Sans Pro', 'ssp')
+
+showtext_auto()
+
+font_theme <- theme(
+  plot.title = element_text(family = 'Merriweather', face = 'bold'),
+  plot.subtitle = element_text(family = 'ssp'),
+  # axis.text = element_text(family = 'ssp'),
+  axis.title = element_text(family = 'ssp'),
+  legend.text = element_text(family = 'ssp'),
+  plot.caption = element_text(family = 'ssp', color = 'darkgray')
+)
+#########################################################################
+
+
+# Function to scrape information about US Senators from wikipedia
+get_senator_info <- function(){
+  
+  senator_info <- tibble(
+    name = NULL,
+    state = NULL,
+    party = NULL,
+    birthplace = NULL,
+    congress = NULL
+  )
+  
+  # Pull info from the 86th Congress (once Alaska and Hawaii had become states) and current 117th Congress
+  congresses <- as.character(117:86)
+  congresses[substr(congresses, nchar(congresses), nchar(congresses)) == '1'] <- 
+    paste0(congresses[substr(congresses, nchar(congresses), nchar(congresses)) == '1'], 'st')
+  congresses[substr(congresses, nchar(congresses), nchar(congresses)) == '3'] <- 
+    paste0(congresses[substr(congresses, nchar(congresses), nchar(congresses)) == '3'], 'rd')
+  congresses[substr(congresses, nchar(congresses), nchar(congresses)) == '2'] <- 
+    paste0(congresses[substr(congresses, nchar(congresses), nchar(congresses)) == '2'], 'nd')
+  congresses[substr(congresses, nchar(congresses), nchar(congresses)) %in% c('0', '4', '5', '6', '7', '8', '9')] <- 
+    paste0(congresses[substr(congresses, nchar(congresses), nchar(congresses)) %in% c('0', '4', '5', '6', '7', '8', '9')], 'th')
+  
+  for (h in 30:length(congresses)){
+    url <- paste0('https://en.wikipedia.org/wiki/', congresses[h], '_United_States_Congress#Members')
+    
+    senator_urls <- NULL
+    for (i in 1:2){
+      for (j in 1:25){
+        for (k in 1:2){
+          senator_urls <- c(senator_urls,
+                            url %>%
+                              read_html() %>%
+                              html_node(xpath = paste0('/html/body/div[3]/div[3]/div[5]/div[1]/div/table/tbody/tr/td[', i, ']/dl[', j, ']/dd[', k, ']/a')) %>%
+                              html_attr(name = 'href'))
+        }
+      }
+    }
+    
+    senator_name <- NULL
+    senator_state <- NULL
+    senator_birthplace <- NULL
+    senator_party <- NULL
+    for (l in 1:length(senator_urls)){
+      senator_page <- paste0('https://en.wikipedia.org', senator_urls[l]) %>%
+        read_html()
+      
+      senator_name <- c(senator_name,
+                        senator_page %>%
+                          html_node(xpath = '//*[@id="mw-content-text"]/div[1]/table[1]/tbody/tr[1]') %>%
+                          html_text())
+      
+      senator_info_to_bind <- senator_page %>%
+        html_node(xpath = '//*[@id="mw-content-text"]/div[1]/table[1]/tbody') %>%
+        html_text()
+      
+      senator_state <- c(senator_state,
+                         str_extract(string = senator_info_to_bind, 
+                                     pattern = "from(.*?)Incumbent"))
+      senator_state <- gsub('from ', '', senator_state)
+      senator_state <- gsub('Incumbent', '', senator_state)
+      
+      senator_birthplace <- c(senator_birthplace,
+                              str_extract(string = senator_info_to_bind,
+                                          pattern = "(?<=age)[^/]*(?=Political party)"))
+      senator_birthplace <- gsub(')|, U.S.', '', senator_birthplace)
+      senator_birthplace <- gsub(".*,", "\\1", senator_birthplace)
+      
+      senator_party <- c(senator_party,
+                         substr(str_extract(string = senator_info_to_bind,
+                                            pattern = "(?<=Political party)[^/]*"), 1, 10))
+      
+    }
+    
+    senator_info <- bind_rows(senator_info,
+                              tibble(
+                                name = senator_name,
+                                state = senator_state,
+                                party = senator_party,
+                                birthplace = senator_birthplace,
+                                congress = congresses[h]
+                              ))
+    print(h)
+  }
+  
+  return(senator_info)
+}
+
+# This was a messy version of senator data that I scraped from wikipedia
+# The scraped data required some cleanup. The cleaned up data can be found in
+# the csv that I load below
+# senators <- get_senator_info()
+
+
+senators <- read_csv('senator_info.csv')
+
+
+
+born_state_by_party <- senators %>%
+  group_by(congress, party) %>%
+  summarise(start_date = unique(start_date),
+            end_date = unique(end_date),
+            n_born_in_state = sum(born_in_state),
+            p_born_in_state = n_born_in_state/n()) %>%
+  ungroup()
+
+born_state_by_state <- senators %>%
+  select(name, state, born_in_state) %>%
+  distinct() %>%
+  group_by(state) %>%
+  summarise(n_born_in_state = sum(born_in_state),
+            p_born_in_state = n_born_in_state/n()) 
+
+
+born_state_by_state %>%  
+  ggplot(aes(state=state, fill=p_born_in_state)) +
+  geom_statebins(border_size = 3, radius = grid::unit(0, "pt"), 
+                 fontface = 'bold', border_col = '#F9ECD5', family = 'ssp') +
+  coord_equal() +
+  scale_fill_gradient(low = 'white', high = 'darkblue', labels = scales::percent,
+                      guide = guide_colorbar(ticks.linewidth = 1, barheight = 10, 
+                                             barwidth = 0.5, label.position = 'left')) +
+  labs(title="Percent of US Senators Born in the State They Represent", fill = '',
+       subtitle = 'US Senators from the 86th Congress (1959) to Present') +
+  theme(plot.title = element_text(face = 'bold'),
+        panel.grid = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = '#F9ECD5'),
+        plot.background = element_rect(fill = '#F9ECD5'),
+        legend.background = element_rect(fill = '#F9ECD5')) +
+  font_theme
+```
+
+There are a few states that stand out to me: Ohio, Mississippi, and South Carolina, where 100% of the senators since the 86th Congress were born in the states they represent, along with Alaska and Virginia, where only 25% of the senators were born in the state they represent.
+
+One possible reason I can think of for Virginia's low rate would be that senators are potentially from DC instead of Virginia. However, that's only true for one senator. One might think that Alaska's low rate could be a result of its geographic distance from the contiguous US. But that rationale wouldn't explain Hawaii's rate of 57% (plus the fact that there are plenty of people from Alaska who could be elected -- the state doesn't need to draw from a pool of people in the lower 48).
+
+An [article in the Washington Post](https://www.washingtonpost.com/blogs/govbeat/wp/2015/01/07/more-senators-have-come-from-ohio-than-any-other-state/) posits that Ohioans like to vote for Ohioans. That may be true for Ohio and states like Mississippi and South Carolina, but I haven't found any surveys or evidence to confirm that.
+
+So what else Ohio, Mississippi, and South Carolina have in common? At least in the past few election cycles, voters in those states have voted for Republicans in national elections. This might be a bit of a stretch, but let's take a look at a breakdown by political party. Do Democrats or Republicans tend to elect senators from their own states more often?
+
+```{r, layout='l-body-outset', fig.width=7.43, fig.height=5.22, fig.retina=1, out.width='100%', message=F, warning=F, echo=F, results = 'hide'}
+
+born_state_by_party %>%
+  ggplot(aes(x = start_date, y = p_born_in_state, color = party)) +
+  geom_step(size = 1) +
+  annotate('text', x = ymd('2020-12-31'), y = 0.635, hjust = 1, 
+           label = 'Republican\nSenators', col = '#DA7C6B', fontface = 'bold') +
+  annotate('text', x = ymd('2020-12-31'), y = 0.42, hjust = 1, 
+           label = 'Democratic\nSenators', col = '#7C9BCE', fontface = 'bold') +
+  scale_y_continuous(limits = c(0.4, 0.9), labels = scales::percent_format(accuracy = 1)) +
+  scale_color_manual(values = c('#7C9BCE', '#DA7C6B')) +
+  labs(title = 'The percentage of US Senators who were born in the states they represent\nhas slowly declined over the past 70 years',
+       x = '', y = '') +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = 'none') +
+  font_theme
+```
+
+I don't think I can make a clear distinction about any Democrat vs Republican questions. However, it does appear that there's been a downward trend over the past seventy years, or that fewer senators are from the states they represent now than in 1960. That could potentially be due to changes in voter preferences, increased travel and moving in more recent years, or something else completely.
+
+If there really is a downward trend in the rate of politicians being born in the states they represent, I wonder if that same trend would also apply to the general public. In my previous [transplant post](https://tylerjtran.github.io/data_blog/posts/2021-11-06-im-from-here-a-look-at-transplants/), I didn't look at any sort of time series, but maybe that's a project for another day. 
+
+Personally, I don't think the state where someone was born is a big factor for most candidates...but I can think of a few high-profile exceptions, including the racist birther conspiracies about Barack Obama. For now, I'll stick to voting for candidates whose policy positions I agree with; I'll leave the web scraping out of the ballot box.
+

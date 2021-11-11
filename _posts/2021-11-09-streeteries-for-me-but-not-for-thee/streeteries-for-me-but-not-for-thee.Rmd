@@ -1,5 +1,5 @@
 ---
-title: "Streeteries for me but not for thee?"
+title: "Streeteries for me, but not for thee?"
 description: |
   Who benefits most from the outdoor dining bill in City Council?
 author:
