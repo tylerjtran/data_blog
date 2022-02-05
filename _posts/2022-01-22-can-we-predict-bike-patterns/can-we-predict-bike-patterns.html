@@ -1493,6 +1493,15 @@ Show code
 <span class='fu'>font_add_google</span><span class='op'>(</span><span class='st'>'Source Sans Pro'</span>, <span class='st'>'ssp'</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/pkg/showtext/man/showtext_auto.html'>showtext_auto</a></span><span class='op'>(</span><span class='op'>)</span>
 
+<span class='va'>font_theme</span> <span class='op'>&lt;-</span> <span class='fu'>theme</span><span class='op'>(</span>
+  plot.title <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>'Merriweather'</span>, face <span class='op'>=</span> <span class='st'>'bold'</span><span class='op'>)</span>,
+  plot.subtitle <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>'ssp'</span><span class='op'>)</span>,
+  axis.text <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>'ssp'</span><span class='op'>)</span>,
+  axis.title <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>'ssp'</span><span class='op'>)</span>,
+  legend.text <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>'ssp'</span><span class='op'>)</span>,
+  plot.caption <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>family <span class='op'>=</span> <span class='st'>'ssp'</span>, color <span class='op'>=</span> <span class='st'>'darkgray'</span><span class='op'>)</span>
+<span class='op'>)</span>
+
 <span class='fu'><a href='https://rdrr.io/pkg/tidycensus/man/census_api_key.html'>census_api_key</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv</a></span><span class='op'>(</span><span class='st'>'census_api'</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='va'>tract_elev</span> <span class='op'>&lt;-</span> <span class='fu'>read_csv</span><span class='op'>(</span><span class='st'>'../../../philly_analyses/indego/tract_elev.csv'</span>, col_types <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>GEOID <span class='op'>=</span> <span class='st'>'c'</span><span class='op'>)</span><span class='op'>)</span>
@@ -1626,7 +1635,8 @@ Show code
        subtitle <span class='op'>=</span> <span class='st'>'Number of Indego bikeshare rides'</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>theme</span><span class='op'>(</span>plot.title <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>face <span class='op'>=</span> <span class='st'>'bold'</span><span class='op'>)</span>,
         panel.background <span class='op'>=</span> <span class='fu'>element_blank</span><span class='op'>(</span><span class='op'>)</span>,
-        panel.grid <span class='op'>=</span> <span class='fu'>element_blank</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+        panel.grid <span class='op'>=</span> <span class='fu'>element_blank</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='va'>font_theme</span>
 </code></pre>
 </div>
 </details>
@@ -1740,12 +1750,12 @@ Show code
 </code></pre>
 </div>
 </details>
-<div id="cmgxuuzhlm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="yidkdbndtf" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: ssp, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#cmgxuuzhlm .gt_table {
+#yidkdbndtf .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1770,7 +1780,7 @@ Show code
   border-left-color: #D3D3D3;
 }
 
-#cmgxuuzhlm .gt_heading {
+#yidkdbndtf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1782,7 +1792,7 @@ Show code
   border-right-color: #D3D3D3;
 }
 
-#cmgxuuzhlm .gt_title {
+#yidkdbndtf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1792,7 +1802,7 @@ Show code
   border-bottom-width: 0;
 }
 
-#cmgxuuzhlm .gt_subtitle {
+#yidkdbndtf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1802,13 +1812,13 @@ Show code
   border-top-width: 0;
 }
 
-#cmgxuuzhlm .gt_bottom_border {
+#yidkdbndtf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
 }
 
-#cmgxuuzhlm .gt_col_headings {
+#yidkdbndtf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1823,7 +1833,7 @@ Show code
   border-right-color: #D3D3D3;
 }
 
-#cmgxuuzhlm .gt_col_heading {
+#yidkdbndtf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1843,7 +1853,7 @@ Show code
   overflow-x: hidden;
 }
 
-#cmgxuuzhlm .gt_column_spanner_outer {
+#yidkdbndtf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1855,15 +1865,15 @@ Show code
   padding-right: 4px;
 }
 
-#cmgxuuzhlm .gt_column_spanner_outer:first-child {
+#yidkdbndtf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cmgxuuzhlm .gt_column_spanner_outer:last-child {
+#yidkdbndtf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cmgxuuzhlm .gt_column_spanner {
+#yidkdbndtf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #000000;
@@ -1875,7 +1885,7 @@ Show code
   width: 100%;
 }
 
-#cmgxuuzhlm .gt_group_heading {
+#yidkdbndtf .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1897,7 +1907,7 @@ Show code
   vertical-align: middle;
 }
 
-#cmgxuuzhlm .gt_empty_group_heading {
+#yidkdbndtf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1912,15 +1922,15 @@ Show code
   vertical-align: middle;
 }
 
-#cmgxuuzhlm .gt_from_md > :first-child {
+#yidkdbndtf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cmgxuuzhlm .gt_from_md > :last-child {
+#yidkdbndtf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cmgxuuzhlm .gt_row {
+#yidkdbndtf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1939,7 +1949,7 @@ Show code
   overflow-x: hidden;
 }
 
-#cmgxuuzhlm .gt_stub {
+#yidkdbndtf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1951,7 +1961,7 @@ Show code
   padding-left: 12px;
 }
 
-#cmgxuuzhlm .gt_summary_row {
+#yidkdbndtf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1961,7 +1971,7 @@ Show code
   padding-right: 5px;
 }
 
-#cmgxuuzhlm .gt_first_summary_row {
+#yidkdbndtf .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1971,7 +1981,7 @@ Show code
   border-top-color: #D3D3D3;
 }
 
-#cmgxuuzhlm .gt_grand_summary_row {
+#yidkdbndtf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1981,7 +1991,7 @@ Show code
   padding-right: 5px;
 }
 
-#cmgxuuzhlm .gt_first_grand_summary_row {
+#yidkdbndtf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1991,11 +2001,11 @@ Show code
   border-top-color: #D3D3D3;
 }
 
-#cmgxuuzhlm .gt_striped {
+#yidkdbndtf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cmgxuuzhlm .gt_table_body {
+#yidkdbndtf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2004,7 +2014,7 @@ Show code
   border-bottom-color: #000000;
 }
 
-#cmgxuuzhlm .gt_footnotes {
+#yidkdbndtf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2018,13 +2028,13 @@ Show code
   border-right-color: #D3D3D3;
 }
 
-#cmgxuuzhlm .gt_footnote {
+#yidkdbndtf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#cmgxuuzhlm .gt_sourcenotes {
+#yidkdbndtf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2038,41 +2048,41 @@ Show code
   border-right-color: #D3D3D3;
 }
 
-#cmgxuuzhlm .gt_sourcenote {
+#yidkdbndtf .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#cmgxuuzhlm .gt_left {
+#yidkdbndtf .gt_left {
   text-align: left;
 }
 
-#cmgxuuzhlm .gt_center {
+#yidkdbndtf .gt_center {
   text-align: center;
 }
 
-#cmgxuuzhlm .gt_right {
+#yidkdbndtf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cmgxuuzhlm .gt_font_normal {
+#yidkdbndtf .gt_font_normal {
   font-weight: normal;
 }
 
-#cmgxuuzhlm .gt_font_bold {
+#yidkdbndtf .gt_font_bold {
   font-weight: bold;
 }
 
-#cmgxuuzhlm .gt_font_italic {
+#yidkdbndtf .gt_font_italic {
   font-style: italic;
 }
 
-#cmgxuuzhlm .gt_super {
+#yidkdbndtf .gt_super {
   font-size: 65%;
 }
 
-#cmgxuuzhlm .gt_footnote_marks {
+#yidkdbndtf .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -2098,12 +2108,12 @@ Show code
     <tr><td class="gt_row gt_left">Intercept</td>
 <td class="gt_row gt_right">6.0385</td>
 <td class="gt_row gt_right">0.0809</td>
-<td class="gt_row gt_center"><div style="display: inline-block; padding: 2px 12px; border-radius: 15px; font-weight: 600; font-size: 12px; background: hsl(230, 100%, 70%); color: hsl(249, 33%, 19%);">74.61</div></td>
+<td class="gt_row gt_center"><div style="display: inline-block; padding: 2px 12px; border-radius: 15px; font-weight: 600; font-size: 12px; background: hsl(230, 100%, 70%); color: hsl(249, 33%, 19%);">74.62</div></td>
 <td class="gt_row gt_right" style="font-weight: bold;">&lt; 0.001</td></tr>
     <tr><td class="gt_row gt_left">Daily max temperature (F)</td>
 <td class="gt_row gt_right">0.0209</td>
 <td class="gt_row gt_right">0.0008</td>
-<td class="gt_row gt_center"><div style="display: inline-block; padding: 2px 12px; border-radius: 15px; font-weight: 600; font-size: 12px; background: hsl(230, 70%, 80%); color: hsl(230, 45%, 30%);">25.12</div></td>
+<td class="gt_row gt_center"><div style="display: inline-block; padding: 2px 12px; border-radius: 15px; font-weight: 600; font-size: 12px; background: hsl(230, 70%, 80%); color: hsl(230, 45%, 30%);">25.13</div></td>
 <td class="gt_row gt_right" style="font-weight: bold;">&lt; 0.001</td></tr>
     <tr><td class="gt_row gt_left">Daily precip (mm)</td>
 <td class="gt_row gt_right">-0.0132</td>
@@ -2116,13 +2126,13 @@ Show code
 <td class="gt_row gt_center"><div style="display: inline-block; padding: 2px 12px; border-radius: 15px; font-weight: 600; font-size: 12px; background: hsl(350, 70%, 70%); color: hsl(350, 45%, 30%);">-6.48</div></td>
 <td class="gt_row gt_right" style="font-weight: bold;">&lt; 0.001</td></tr>
     <tr><td class="gt_row gt_left">Covid hospitalizations prior 7 days</td>
-<td class="gt_row gt_right">-0.0039</td>
+<td class="gt_row gt_right">-0.0040</td>
 <td class="gt_row gt_right">0.0005</td>
-<td class="gt_row gt_center"><div style="display: inline-block; padding: 2px 12px; border-radius: 15px; font-weight: 600; font-size: 12px; background: hsl(350, 70%, 70%); color: hsl(350, 45%, 30%);">-8.42</div></td>
+<td class="gt_row gt_center"><div style="display: inline-block; padding: 2px 12px; border-radius: 15px; font-weight: 600; font-size: 12px; background: hsl(350, 70%, 70%); color: hsl(350, 45%, 30%);">-8.43</div></td>
 <td class="gt_row gt_right" style="font-weight: bold;">&lt; 0.001</td></tr>
     <tr><td class="gt_row gt_left">% electric bikes in fleet</td>
-<td class="gt_row gt_right">1.4769</td>
-<td class="gt_row gt_right">0.6036</td>
+<td class="gt_row gt_right">1.4776</td>
+<td class="gt_row gt_right">0.6034</td>
 <td class="gt_row gt_center"><div style="display: inline-block; padding: 2px 12px; border-radius: 15px; font-weight: 600; font-size: 12px; background: hsl(230, 70%, 90%); color: hsl(230, 45%, 30%);">2.45</div></td>
 <td class="gt_row gt_right" style="font-weight: bold;">0.015</td></tr>
     <tr><td class="gt_row gt_left">Weekend</td>
@@ -2164,24 +2174,23 @@ Show code
   <span class='fu'>geom_line</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>predicted_n</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='st'>'darkred'</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>geom_line</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>actual_n</span><span class='op'>)</span>, col <span class='op'>=</span> <span class='st'>'darkblue'</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>annotate</span><span class='op'>(</span><span class='st'>'text'</span>, x <span class='op'>=</span> <span class='fu'><a href='https://lubridate.tidyverse.org/reference/ymd.html'>ymd</a></span><span class='op'>(</span><span class='st'>'2020-01-01'</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='fl'>450</span>, label <span class='op'>=</span> <span class='st'>'Training data'</span>,
-           fontface <span class='op'>=</span> <span class='st'>'bold'</span>, col <span class='op'>=</span> <span class='st'>'darkgray'</span>, hjust <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span> <span class='op'>+</span>
+           fontface <span class='op'>=</span> <span class='st'>'bold'</span>, col <span class='op'>=</span> <span class='st'>'darkgray'</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, family <span class='op'>=</span> <span class='st'>'ssp'</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>annotate</span><span class='op'>(</span><span class='st'>'text'</span>, x <span class='op'>=</span> <span class='fu'><a href='https://lubridate.tidyverse.org/reference/ymd.html'>ymd</a></span><span class='op'>(</span><span class='st'>'2021-07-01'</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='fl'>450</span>, label <span class='op'>=</span> <span class='st'>'Predicted rides'</span>,
-           fontface <span class='op'>=</span> <span class='st'>'bold'</span>, col <span class='op'>=</span> <span class='st'>'darkred'</span>, hjust <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span> <span class='op'>+</span>
+           fontface <span class='op'>=</span> <span class='st'>'bold'</span>, col <span class='op'>=</span> <span class='st'>'darkred'</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, family <span class='op'>=</span> <span class='st'>'ssp'</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>annotate</span><span class='op'>(</span><span class='st'>'text'</span>, x <span class='op'>=</span> <span class='fu'><a href='https://lubridate.tidyverse.org/reference/ymd.html'>ymd</a></span><span class='op'>(</span><span class='st'>'2021-07-01'</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='fl'>300</span>, label <span class='op'>=</span> <span class='st'>'Actual rides'</span>,
-           fontface <span class='op'>=</span> <span class='st'>'bold'</span>, col <span class='op'>=</span> <span class='st'>'darkblue'</span>, hjust <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span> <span class='op'>+</span>
+           fontface <span class='op'>=</span> <span class='st'>'bold'</span>, col <span class='op'>=</span> <span class='st'>'darkblue'</span>, hjust <span class='op'>=</span> <span class='fl'>0</span>, family <span class='op'>=</span> <span class='st'>'ssp'</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>scale_x_date</span><span class='op'>(</span>date_labels <span class='op'>=</span> <span class='st'>'%b %Y'</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>scale_y_continuous</span><span class='op'>(</span>labels <span class='op'>=</span> <span class='fu'>scales</span><span class='fu'>::</span><span class='va'><a href='https://scales.r-lib.org/reference/label_number.html'>comma</a></span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'>labs</span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>''</span>, y <span class='op'>=</span> <span class='st'>''</span>,
        title <span class='op'>=</span> <span class='st'>"Predicted vs actual daily Indego bikeshare rides"</span><span class='op'>)</span> <span class='op'>+</span>
-  <span class='fu'>theme</span><span class='op'>(</span>plot.title <span class='op'>=</span> <span class='fu'>element_text</span><span class='op'>(</span>face <span class='op'>=</span> <span class='st'>'bold'</span><span class='op'>)</span>,
-        panel.background <span class='op'>=</span> <span class='fu'>element_blank</span><span class='op'>(</span><span class='op'>)</span>,
-        panel.grid <span class='op'>=</span> <span class='fu'>element_blank</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='fu'>theme</span><span class='op'>(</span>panel.background <span class='op'>=</span> <span class='fu'>element_blank</span><span class='op'>(</span><span class='op'>)</span>,
+        panel.grid <span class='op'>=</span> <span class='fu'>element_blank</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='va'>font_theme</span>
 </code></pre>
 </div>
 </details>
 <p><img src="can-we-predict-bike-patterns_files/figure-html5/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /></p>
 </div>
-<p>I’d say the model predicted number of rides…fine. Could have been better, could have been worse.</p>
 <p>I thought I’d dig even further and see if I could predict whether someone would use an electric-assist bike vs a traditional bike. Indego has really ramped up their electric-assist fleet recently, so I only used data from September 2021 so that the model wasn’t just picking up on fleet changes.</p>
 <p>I decided to use a classification tree almost solely because I think decision trees are easy to visualize in a way that makes sense to a lot of people and might mirror human decisionmaking.</p>
 <p>As model inputs, I used elevation change between the ride start and ride end (thinking that an uphill ride would be more likely to be electric), trip duration (thinking longer rides might be less likely to be electric because electric charges are by the minute), whether the trip started or ended in a neighborhood where incomes are higher (thinking that higher incomes might mean someone is more likely to spend money on electric assist), some weather variables, and passholder type.</p>

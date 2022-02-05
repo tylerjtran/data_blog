@@ -32,6 +32,15 @@ font_add_google('Merriweather')
 font_add_google('Source Sans Pro', 'ssp')
 showtext_auto()
 
+font_theme <- theme(
+  plot.title = element_text(family = 'Merriweather', face = 'bold'),
+  plot.subtitle = element_text(family = 'ssp'),
+  axis.text = element_text(family = 'ssp'),
+  axis.title = element_text(family = 'ssp'),
+  legend.text = element_text(family = 'ssp'),
+  plot.caption = element_text(family = 'ssp', color = 'darkgray')
+)
+
 census_api_key(Sys.getenv('census_api'))
 
 tract_elev <- read_csv('../../../philly_analyses/indego/tract_elev.csv', col_types = c(GEOID = 'c'))
@@ -165,7 +174,8 @@ indego_daily %>%
        subtitle = 'Number of Indego bikeshare rides') +
   theme(plot.title = element_text(face = 'bold'),
         panel.background = element_blank(),
-        panel.grid = element_blank())
+        panel.grid = element_blank()) +
+  font_theme
 
 ```
 
@@ -295,23 +305,22 @@ indego_daily_sample %>%
   geom_line(aes(y = predicted_n), col = 'darkred') +
   geom_line(aes(y = actual_n), col = 'darkblue') +
   annotate('text', x = ymd('2020-01-01'), y = 450, label = 'Training data',
-           fontface = 'bold', col = 'darkgray', hjust = 0) +
+           fontface = 'bold', col = 'darkgray', hjust = 0, family = 'ssp') +
   annotate('text', x = ymd('2021-07-01'), y = 450, label = 'Predicted rides',
-           fontface = 'bold', col = 'darkred', hjust = 0) +
+           fontface = 'bold', col = 'darkred', hjust = 0, family = 'ssp') +
   annotate('text', x = ymd('2021-07-01'), y = 300, label = 'Actual rides',
-           fontface = 'bold', col = 'darkblue', hjust = 0) +
+           fontface = 'bold', col = 'darkblue', hjust = 0, family = 'ssp') +
   scale_x_date(date_labels = '%b %Y') +
   scale_y_continuous(labels = scales::comma) +
   labs(x = '', y = '',
        title = "Predicted vs actual daily Indego bikeshare rides") +
-  theme(plot.title = element_text(face = 'bold'),
-        panel.background = element_blank(),
-        panel.grid = element_blank())
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank()) +
+  font_theme
 
 ```
 
 
-I'd say the model predicted number of rides...fine. Could have been better, could have been worse.
 
 I thought I'd dig even further and see if I could predict whether someone would use an electric-assist bike vs a traditional bike. Indego has really ramped up their electric-assist fleet recently, so I only used data from September 2021 so that the model wasn't just picking up on fleet changes.
 
