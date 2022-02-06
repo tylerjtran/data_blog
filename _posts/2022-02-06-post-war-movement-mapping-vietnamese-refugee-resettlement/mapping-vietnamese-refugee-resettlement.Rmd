@@ -1,0 +1,172 @@
+---
+title: "Post-war movement: Mapping Vietnamese refugee resettlement"
+description: |
+  Vietnamese immigration to the US in 1975
+author:
+  - name: Tyler Tran
+date: 02-06-2022
+output:
+  distill::distill_article:
+    code_folding: true
+    self_contained: false
+draft: false
+---
+
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+Last year, I read _From Vietnam to America_ by Gail Paradise Kelly. Written in 1977, the book chronicles the experiences of Vietnamese refugees in the US after the Fall of Saigon in April 1975. That year, most Vietnamese refugees traveled through Guam or Wake on their way to one of four refugee camps in the US: Fort Indiantown Gap in Pennsylvania, Fort Chaffee in Arkansas, Camp Pendleton in California, or Eglin Air Force Base in the Florida panhandle.
+
+My dad arrived at Fort Indiantown Gap in 1975 (about 100 miles from my current home in Philadelphia) before moving to Maine with his sponsor. While Dr. Kelly goes in-depth about the failures of the US government to prepare for so many refugees, I'm going to start by taking a spatial look at refugee movement. I'll follow up in the future with more.
+
+
+```{r, fig.width=9, fig.height=6.1, fig.align = 'center', message=F, warning=F, echo=F, results = F}
+
+library(tidyverse); library(sf); library(tigris); library(ggtext); library(ggiraph); library(showtext)
+
+font_add_google('Merriweather')
+font_add_google('Source Sans Pro', 'ssp')
+showtext_auto()
+
+font_theme <- theme(
+  plot.title = element_text(family = 'Merriweather', face = 'bold'),
+  plot.subtitle = element_text(family = 'ssp'),
+  axis.text = element_text(family = 'ssp'),
+  axis.title = element_text(family = 'ssp'),
+  legend.text = element_text(family = 'ssp'),
+  plot.caption = element_text(family = 'ssp', color = 'darkgray')
+)
+
+
+resettlement_states <- tibble(
+  state = c('Alabama', 'Alaska', 'Arkansas', 'Arizona', 'California', 'Colorado', 'Connecticut', 'Delaware',
+            'DC', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+            'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
+            'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina',
+            'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+            'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+            'Wisconsin', 'Wyoming'),
+  code = c('AL', 'AK', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DE',
+           'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY',
+           'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO',
+           'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC',
+           'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+           'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'),
+  n_resettled = c(1262,81,2042,1059,27199,1790,1175,155,1254,5322,1331,2039,412,3696,1785,2593,1897,967,3602,375,2319,
+                  1169,2200,3802,488,2669,198,1211,338,161,1515,1040,3806,1261,448,2924,3689,2063,7159,223,759,545,922,
+                  9130,559,150,3733,4182,195,1821,115)
+)
+
+us_states <- states(cb = T) %>%
+  # Only keep lower 48
+  filter(! NAME %in% c('Alaska', 'Hawaii', 'United States Virgin Islands', 
+                       'Commonwealth of the Northern Mariana Islands', 'Guam', 
+                       'American Samoa', 'Puerto Rico')) %>%
+  st_transform(crs = 5070) %>%
+  left_join(resettlement_states, by = c('NAME' = 'state')) %>%
+  mutate(tooltip = paste0(NAME, '\n', scales::comma(n_resettled, accuracy = 1), ' people resettled'))
+
+
+resettlement_cities <- tibble(
+  city = c('Los Angeles', 'San Francisco', 'Jacksonville', 'Dallas', 'Washington DC', 'Philadelphia',
+           'Seattle', 'New York', 'Twin Cities', 'Chicago', 'Denver', 'New Orleans', 'Columbus',
+           'Oklahoma City', 'Kansas City', 'San Antonio', 'Little Rock'),
+  n_families = c(2499, 2028, 1244, 973, 957, 795, 733, 633, 561, 530, 478, 453, 437, 419, 384, 379, 351),
+  lat = c(34.074898, 37.764246, 30.357497, 32.773259, 38.900213, 39.952502,
+          47.603816, 40.720436, 44.945316, 41.807205, 39.723867, 29.982573,
+          39.980031, 35.476948, 39.105526, 29.441299, 34.745967),
+  lng = c(-118.263836, -122.442566, -81.716050, -96.822911, -77.028772, -75.163579,
+          -122.330300, -73.993211, -93.204949, -87.706395, -104.956761, -90.081685,
+          -82.995260, -97.531049, -94.642597, -98.502323, -92.301748)
+) %>%
+  mutate(map_label = paste0(city, '\n', scales::comma(n_families, accuracy = 1), ' families')) %>%
+  st_as_sf(coords = c('lng', 'lat'), crs = 4326) %>%
+  st_transform(crs = st_crs(us_states))
+
+
+p <- ggplot() +
+  geom_sf_interactive(data = us_states, aes(tooltip = tooltip, data_id = tooltip), 
+                      fill = '#DCDCDC', color = 'white', lwd = 1) +
+  geom_sf(data = resettlement_cities, aes(size = n_families),
+          color = '#DA7C6B', alpha = 0.6) +
+  geom_sf_text(data = resettlement_cities, aes(label = map_label),
+               size = 3, fontface = 'italic', hjust = 0, lineheight = 0.65, family = 'ssp') +
+  scale_size(range = c(5, 30)) +
+  labs(title = 'Refugee resettlement was concentrated in urban areas, particularly in cities that were least\nimpacted by the 1970s recession',
+       subtitle = 'Vietnamese refugee resettlement by September 1975<br><br>_Hover over states for more info_') +
+  font_theme +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank(),
+        plot.subtitle = element_markdown(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        legend.position = 'none')
+```
+
+```{r, layout='l-body-outset', out.width='120%', preview = T}
+girafe(ggobj = p,
+       options = list(
+         opts_tooltip(
+           css = "padding:3pt;font-family: Source Sans Pro;color:white;background-color:black;")),
+       width_svg = 9.9, height_svg = 7.9)
+```
+
+
+Cities in California saw much of the resettlement, likely influenced by proximity to Camp Pendleton. A few other places that stand out on the map above are east coast cities like New York, Philly, and DC, where the numbers are relatively low, and Jacksonville, where the resettlement numbers are relatively high.
+
+According to Dr. Kelly, the lower numbers in the northeast can be explained by economic recession in the 70s; these cities were hit hard, and higher unemployment made these destinations less attractive for resettlement. 
+
+The states that saw the most resettlement (in terms of raw numbers) were generally larger states and states with refugee camps (or in close proximity to refugee camps). California outranks most other states by orders of magnitude (so much that I had to add a log scale to the graph below).
+
+```{r, fig.width=6.1, fig.height=9, out.width='90%',fig.retina=1, fig.align='center',message=F, warning=F, echo=F}
+
+census_80 <- read_csv('../../../vietnam/census_vietnamese_1980.csv') %>%
+  rename(n_1980 = vietnamese_population)
+
+resettlement_states <- resettlement_states %>%
+  left_join(census_80, by = 'state') %>%
+  mutate(refugee_camp = state %in% c('California', 'Pennsylvania', 'Arkansas', 'Florida'),
+         compare_80_resettled = ifelse((n_1980 - n_resettled) > 0, 'increase', 'decrease'),
+         prop_80_resettled = n_1980/n_resettled)
+
+
+label_df <- tibble(
+  label = "<span style='color:#00BFC4'>**Blue dots**</span> represent states with <i>more</i><br>Vietnamese residents in 1980 than were<br>resettled in 1975. <span style='color:#F8766D'>**Red dots**</span> represent<br>states with fewer.",
+  x = 4500, y = 7
+)
+
+
+resettlement_states %>%
+  ggplot(aes(y = reorder(state, n_resettled))) +
+  geom_point(aes(x = n_resettled), size = 4.5, alpha = 0.4) +
+  geom_text(aes(x = 0.85*n_resettled, label = state, fontface = ifelse(refugee_camp, 4, 1)), 
+            hjust = 1, vjust = 0.5, col = 'darkgray', size = 3, family = 'ssp') +
+  geom_point(aes(x = n_1980, col = compare_80_resettled), size = 3, alpha = 0.5) +
+  geom_richtext(data = label_df,
+                aes(x = x, y = y, label = label),
+                hjust = 0, size = 3.5, family = 'ssp',
+                fill = NA, label.color = NA, label.padding = grid::unit(rep(0, 4), 'pt')) +
+  geom_curve(aes(x = 4400, y = 7, xend = 1080, yend = 8.5), curvature = -0.3,
+             arrow = arrow(type = 'closed', length = unit(0.1, 'in'))) +
+  scale_x_continuous(trans = 'log10', breaks = c(100, 1000, 10000, 100000),
+                     labels = c('100', '1,000', '10,000', '100,000')) +
+  labs(title = 'Larger states - especially states with refugee camps - generally\nsaw more refugee resettlement',
+       subtitle = 'Gray dots show number of Vietnamese refugees resettled in 1975; smaller dots show 1980\nVietnamese population',
+       x = '', y = '') +
+  font_theme +
+  theme(legend.position = 'none',
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+
+```
+
+Unfortunately, it doesn't look like the 1970 decennial census accounted for the number of Vietnamese residents per state, but the smaller red and blue dots in the graph above represent the Vietnamese population as of 1980. In the five years after the refugee camps closed, it seems that the states with the largest Vietnamese populations gained more people, while the states with the fewest Vietnamese residents tended to see shrinkage.
+
+From these graphs alone, it appears my dad's situation wasn't exactly typical. While many refugees moved to urban centers, his sponsor brought him (and others) to Maine, a state where only 375 refugee resettlements were recorded.
