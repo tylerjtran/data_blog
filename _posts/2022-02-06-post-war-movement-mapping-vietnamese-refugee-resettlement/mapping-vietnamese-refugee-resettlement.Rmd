@@ -2,6 +2,7 @@
 title: "Post-war movement: Mapping Vietnamese refugee resettlement"
 description: |
   Vietnamese immigration to the US in 1975
+preview: ../../images/vietnam_city_map.png
 author:
   - name: Tyler Tran
 date: 02-06-2022
@@ -107,11 +108,11 @@ p <- ggplot() +
         legend.position = 'none')
 ```
 
-```{r, layout='l-body-outset', out.width='120%', preview = T}
+```{r, layout='l-body-outset', out.width='120%'}
 girafe(ggobj = p,
        options = list(
          opts_tooltip(
-           css = "padding:3pt;font-family: Source Sans Pro;color:white;background-color:black;")),
+           css = "padding:3pt;font-family: Open Sans;color:white;background-color:black;")),
        width_svg = 9.9, height_svg = 7.9)
 ```
 
@@ -167,6 +168,6 @@ resettlement_states %>%
 
 ```
 
-Unfortunately, it doesn't look like the 1970 decennial census accounted for the number of Vietnamese residents per state, but the smaller red and blue dots in the graph above represent the Vietnamese population as of 1980. In the five years after the refugee camps closed, it seems that the states with the largest Vietnamese populations gained more people, while the states with the fewest Vietnamese residents tended to see shrinkage.
+I tried to find census data from before and after the Fall of Saigon in 1975, but it doesn't look like the 1970 decennial census accounted for the number of Vietnamese residents per state. The smaller red and blue dots in the graph above represent the Vietnamese population as of 1980. In the five years after the refugee camps closed, it seems that the states with the largest Vietnamese populations gained more people, while the states with the fewest Vietnamese residents tended to see shrinkage.
 
 From these graphs alone, it appears my dad's situation wasn't exactly typical. While many refugees moved to urban centers, his sponsor brought him (and others) to Maine, a state where only 375 refugee resettlements were recorded.
