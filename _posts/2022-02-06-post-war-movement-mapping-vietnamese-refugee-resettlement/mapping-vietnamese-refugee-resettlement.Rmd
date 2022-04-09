@@ -24,7 +24,7 @@ Last year, I read _From Vietnam to America_ by Gail Paradise Kelly. Written in 1
 My dad arrived at Fort Indiantown Gap in 1975 (about 100 miles from my current home in Philadelphia) before moving to Maine with his sponsor. While Dr. Kelly goes in-depth about the failures of the US government to prepare for so many refugees, I'm going to start by taking a spatial look at refugee movement. I'll follow up in the future with more.
 
 
-```{r, fig.width=9, fig.height=6.1, fig.align = 'center', message=F, warning=F, echo=F, results = F}
+```{r, fig.width=9, fig.height=6.1, fig.align = 'center', message=F, warning=F, echo=F, results = F, include = F}
 
 library(tidyverse); library(sf); library(tigris); library(ggtext); library(ggiraph); library(showtext)
 
@@ -108,7 +108,7 @@ p <- ggplot() +
         legend.position = 'none')
 ```
 
-```{r, layout='l-body-outset', out.width='120%'}
+```{r, layout='l-body-outset', out.width='120%', fig.alt='A map of the US showing the number of Vietnamese refugee families resettled by September 1975 in several cities, with concentration in urban areas that were least impacted by the 1970s recession.'}
 girafe(ggobj = p,
        options = list(
          opts_tooltip(
@@ -123,7 +123,7 @@ According to Dr. Kelly, the lower numbers in the northeast can be explained by e
 
 The states that saw the most resettlement (in terms of raw numbers) were generally larger states and states with refugee camps (or in close proximity to refugee camps). California outranks most other states by orders of magnitude (so much that I had to add a log scale to the graph below).
 
-```{r, fig.width=6.1, fig.height=9, out.width='90%',fig.retina=1, fig.align='center',message=F, warning=F, echo=F}
+```{r, fig.width=6.1, fig.height=9, out.width='90%',fig.retina=1, fig.align='center',message=F, warning=F, echo=F, fig.alt='Graph comparing the number of Vietnamese refugees resettled in each US state in 1975 compared to 1980 Vietnamese populations; larger states saw more refugee resettlement.'}
 
 census_80 <- read_csv('../../../vietnam/census_vietnamese_1980.csv') %>%
   rename(n_1980 = vietnamese_population)
@@ -151,8 +151,8 @@ resettlement_states %>%
                 aes(x = x, y = y, label = label),
                 hjust = 0, size = 3.5, family = 'ssp',
                 fill = NA, label.color = NA, label.padding = grid::unit(rep(0, 4), 'pt')) +
-  geom_curve(aes(x = 4400, y = 7, xend = 1080, yend = 8.5), curvature = -0.3,
-             arrow = arrow(type = 'closed', length = unit(0.1, 'in'))) +
+  annotate(geom = 'curve', x = 4400, y = 7, xend = 1080, yend = 8.5, 
+           curvature = -0.3, arrow = arrow(type = 'closed', length = unit(0.1, 'in'))) +
   scale_x_continuous(trans = 'log10', breaks = c(100, 1000, 10000, 100000),
                      labels = c('100', '1,000', '10,000', '100,000')) +
   labs(title = 'Larger states - especially states with refugee camps - generally\nsaw more refugee resettlement',

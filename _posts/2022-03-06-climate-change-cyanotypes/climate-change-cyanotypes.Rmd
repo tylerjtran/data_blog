@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = FALSE, message = F, warning = F)
 
 
 
-```{r, layout='l-body-outset', out.width='120%', fig.width=11.44, fig.height=4.32}
+```{r, layout='l-body-outset', out.width='120%', fig.width=11.44, fig.height=4.32, fig.alt='Statements classified as virtually certain from an IPCC assessment report visualized as ocean waves, with a highlighted statement about sea level rise being virtually certain.'}
 library(tidyverse); library(geomtextpath); library(sf)
 
 virtually_certain <- tibble(
@@ -84,7 +84,7 @@ And I'll note: these aren't cyanotypes, but I recently bought some cyanotype che
 
 
 
-```{r}
+```{r, fig.alt='An animation of the Greenland Ice Sheet shrinking with a statement about the certainty of ice loss.'}
 # gif: Temporal aspect of fireplaces that currently exist
 
 # change_bbox <- function(sf_obj, scalar){

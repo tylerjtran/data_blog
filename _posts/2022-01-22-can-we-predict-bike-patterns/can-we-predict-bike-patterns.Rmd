@@ -23,7 +23,7 @@ As an [Indego bikeshare](https://www.rideindego.com/) subscriber, I often ask my
 Luckily, Indego makes [anonymized data](https://www.rideindego.com/about/data/) available for people like me who want to dig into these questions.
 
 
-```{r, layout='l-body-outset', fig.width=9.5, fig.height=6, out.width='100%', fig.retina=1, fig.align = 'center', message=F, warning=F, echo=F, results = 'hide'}
+```{r, layout='l-body-outset', fig.width=9.5, fig.height=6, out.width='100%', fig.retina=1, fig.align = 'center', message=F, warning=F, echo=F, results = 'hide', fig.alt='Graph showing daily number of Indego bike rides with a strong seasonal pattern.'}
 
 library(tidyverse); library(lubridate); library(rnoaa); library(sf); library(tidycensus); library(rpart.plot)
 library(rpart); library(parsnip); library(zoo); library(gt); library(showtext)
@@ -235,7 +235,7 @@ add_stat_color <- function(tval){
 ```
 
 
-```{r, layout='l-body-outset', fig.width=6, fig.height=6, out.width='100%', fig.retina=1, fig.align='center',message=F, warning=F, echo=F}
+```{r, layout='l-body-outset', fig.width=6, fig.height=6, out.width='100%', fig.retina=1, fig.align='center',message=F, warning=F, echo=F, fig.alt='Regression table showing results of a GLM to model daily bikeshare volumes'}
 
 
 regression_table %>%
@@ -287,7 +287,7 @@ Each of the independent variables was statistically significant except the "holi
 I used about a year of 2020 (plus a couple months of 2021 so that I'd have a year of pandemic data) data to make the model with hopes that I could roughly predict rideshare counts in 2021. The graph below shows that training data in gray, the model-predicted values in red, and the actual rideshare counts in blue.
 
 
-```{r, layout='l-body-outset', fig.width=13, fig.height=6, out.width='100%', fig.retina=1, fig.align='center',message=F, warning=F, echo=F, results = 'hide'}
+```{r, layout='l-body-outset', fig.width=13, fig.height=6, out.width='100%', fig.retina=1, fig.align='center',message=F, warning=F, echo=F, results = 'hide', fig.alt='A line graph showing predicted versus actual bikeshare daily bikeshare volumes from the model'}
 
 
 indego_daily_leftovers <- indego_daily %>%
@@ -328,7 +328,7 @@ I decided to use a classification tree almost solely because I think decision tr
 
 As model inputs, I used elevation change between the ride start and ride end (thinking that an uphill ride would be more likely to be electric), trip duration (thinking longer rides might be less likely to be electric because electric charges are by the minute), whether the trip started or ended in a neighborhood where incomes are higher (thinking that higher incomes might mean someone is more likely to spend money on electric assist), some weather variables, and passholder type.
 
-```{r, layout='l-body-outset', fig.width=8, fig.height=6, out.width='100%', fig.retina=1, fig.align='center',message=F, warning=F, echo=F, results = 'hide', preview = T}
+```{r, layout='l-body-outset', fig.width=8, fig.height=6, out.width='100%', fig.retina=1, fig.align='center',message=F, warning=F, echo=F, results = 'hide', preview = T, fig.alt='A classification tree showing  the influence of several variables to predict proportion of electric-assist bikes checked out from bikeshare'}
 set.seed(164) 
 
 indego_sample <- indego %>%
