@@ -1,0 +1,179 @@
+---
+title: "LLMs to connect data sets"
+description: |
+  Connecting media coverage and public gun violence data
+preview: philly_bivariate_map.png
+author:
+  - name: Tyler Tran
+date: 03-15-2026
+output:
+  distill::distill_article:
+    code_folding: true
+    self_contained: false
+draft: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+One of my favorite uses of AI has been to give it tasks that are doable for me but super tedious. For example, instead of sorting through tons of different summaries to categorize them, I'll have a large language model do it.
+
+In this case, I used an LLM (Claude) to connect media coverage about gun violence in Philadelphia to the City's [public shooting data set](https://opendataphilly.org/datasets/shooting-victims/). I certainly could have done this on my own if I had unlimited time and patience (or the desire to do a bunch of web scraping). Instead, I gave Claude the following prompt:
+
+_"Here is public shooting data for Philadelphia, Pennsylvania. Typically, the data set is updated daily. Each row represents a shooting victim. The dc_key column (DC number) is the incident identifier (it's possible for multiple rows -- in other words, multiple shooting victims -- to have the same DC number if multiple people were shot in a single incident)._ 
+
+_Search the web for news articles that reference shootings in Philadelphia. Generally, you should focus on news outlets that are local to Philadelphia, though you can include other outlets. Examples of local news outlets include 6abc Action News, NBC10 Philadelphia, CBS Philadelphia, Fox 29 Philadelphia, the Philadelphia Inquirer, the Philadelphia Tribune, the Temple News, the Daily Pennsylvanian, Philadelphia Magazine, Philadelphia Metro, the South Philly Review, and Philadelphia Gay News. Don't search for news articles before 2015 (that's when the shooting victim data set starts)._
+
+_Create a table with the following columns: article_url, article_date, outlet_name, and dc_key. Each row should be a different news article; do not repeat the same news article multiple times. The article_url column should not include any query string or any UTM tracking (generally, don't include characters after the question mark). The article_date column should be the date that the article was published or last updated. The dc_key column should correspond to the best guess of which shooting the news article is referencing from the public shooting victim data set (use date, time of day, victim characteristics, location characteristics, etc. to link the news articles and shooting incidents)."_
+
+The output wasn't perfect. I did some spot checking, and the LLM had particular issues when news articles mentioned multiple shootings or when the article was long after a shooting took place (e.g., the article might have described a court hearing years after the shooting took place, and details of the actual incident might have been too sparse to connect to the original shooting data set).
+
+So, these takeaways should be taken with a grain of salt and **don't represent a rigorous scientific evaluation of media coverage** (particularly because I used the AI model to search for articles). This is more an example of using an LLM to take over a tedious task. But here's what I found:
+
+* Media articles cover fatal shootings (over nonfatal shootings) at a higher rate than we see in the overall shooting data
+* Media articles cover police shootings at a higher rate
+* Media articles cover shootings with multiple victims at a higher rate
+* After removing shootings where police are involved (often missing demographic data in the public data set), the racial and gender breakdowns of media-covered shootings are similar to the breakdowns in the overall shooting data
+
+As an example of what I mean when I say "media articles cover something at a _higher rate_": the graph below shows that about 21% of the shootings in the public data were fatal shootings, but about 65% of the shootings that media articles referenced (or at least of the subset of media articles that Claude pulled) were fatal shootings.
+
+```{r, layout='l-body-outset', fig.width=8.2, fig.height=5.07, fig.retina=1, out.width='100%', message=F, warning=F, echo=F, results = 'hide', fig.alt='A bar chart showing the share of shootings that are fatal and the share of media-covered shootings that are fatal'}
+
+library(tidyverse); library(sf); library(showtext); library(biscale); library(cowplot)
+
+font_add_google('Merriweather')
+font_add_google('Source Sans 3', 'ssp')
+showtext_auto()
+
+font_theme <- theme(
+  plot.title = element_text(family = 'Merriweather', face = 'bold'),
+  plot.subtitle = element_text(family = 'ssp'),
+  axis.text = element_text(family = 'ssp'),
+  axis.title = element_text(family = 'ssp'),
+  legend.text = element_text(family = 'ssp'),
+  plot.caption = element_text(family = 'ssp', color = 'darkgray')
+)
+
+shootings <- read_csv('https://phl.carto.com/api/v2/sql?q=SELECT+*,+ST_Y(the_geom)+AS+lat,+ST_X(the_geom)+AS+lng+FROM+shootings&filename=shootings&format=csv&skipfields=cartodb_id') %>%
+  mutate(dc_key = paste0('a', as.character(dc_key))) %>%
+  group_by(dc_key) %>%
+  mutate(multiple_victims = sum(n()) > 1) %>%
+  ungroup() %>%
+  mutate(race_eth = case_when(
+    latino == 1 ~ 'Latino',
+    race == 'A' ~ 'Asian',
+    race == 'B' ~ 'Black',
+    race == 'W' ~ 'White',
+    TRUE ~ NA),
+    fatal = case_when(
+      fatal == 1 ~ 'Fatal',
+      fatal == 0 ~ 'Nonfatal'
+    ))
+  
+
+shooting_articles <- read_csv('C:/Users/Tyler/Desktop/shooting_articles.csv') %>%
+  left_join(shootings %>%
+              # just keep data from one victim from each dc_key
+              distinct(dc_key, .keep_all = T) %>%
+              select(dc_key, shooting_date = date_, race_eth, latino, sex, age, officer_involved, fatal, multiple_victims, lat, lng),
+            by = 'dc_key') %>%
+  filter(verified == T)
+
+shootings_fatal <- shootings %>%
+  count(fatal) %>%
+  filter(! is.na(fatal)) %>%
+  mutate(p_shootings = n/sum(n))
+
+articles_fatal <- shooting_articles %>%
+  count(fatal) %>%
+  filter(! is.na(fatal)) %>%
+  mutate(p_articles = n/sum(n))
+
+ggplot() +
+  geom_col(data = shootings_fatal, aes(x = p_shootings, y = fatal, fill = 'All shootings')) +
+  geom_col(data = articles_fatal, aes(x = p_articles, y = fatal, fill = 'News articles'), 
+           width = 0.5) +
+  scale_x_continuous(labels = scales::percent, expand = c(0, 0)) +
+  scale_fill_manual(
+    values = c('All shootings' = '#f1c21b', 'News articles' = '#7040B8')
+  ) +
+  labs(
+    title = 'Media articles disproportionately cover fatal shootings (vs nonfatal shootings)',
+    subtitle = 'Share of shootings (and media coverage) that are fatal vs nonfatal',
+    x = '', y = '', fill = ''
+  ) +
+  font_theme +
+  theme(
+    legend.position = 'bottom',
+    axis.text = element_text(size = 11),
+    axis.ticks.y = element_blank(),
+    plot.background = element_blank(),
+    panel.background = element_blank(),
+    panel.grid = element_blank(),
+    axis.line.y = element_line(color = 'darkgray'),
+    panel.grid.major.x = element_line(color = 'darkgray', linetype = 'dashed')
+  )
+
+```
+
+\
+
+\
+
+If we start to look at geographical differences in shootings vs media coverage, we see that Northeast Philly sees fewer shootings than the rest of the city but more media coverage; the opposite is true for North Philly (west of Broad) and parts of West Philly, where there are more shootings but less media coverage.
+
+```{r, layout='l-body-outset', fig.width=8.2, fig.height=5.07, fig.retina=1, out.width='100%', message=F, warning=F, echo=F, results = 'hide', fig.alt='A bivariate map of Philadelphia showing census tracts that see more shootings and more media coverage about shootings'}
+
+tracts <- st_read('https://hub.arcgis.com/api/v3/datasets/8bc0786524a4486bb3cf0f9862ad0fbf_0/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1')
+
+shootings_sf <- shootings %>%
+  filter(! is.na(lat)) %>%
+  st_as_sf(coords = c('lng', 'lat'), crs = st_crs(tracts))
+
+shooting_articles_sf <- shooting_articles %>%
+  filter(! is.na(lat)) %>%
+  st_as_sf(coords = c('lng', 'lat'), crs = st_crs(tracts))
+
+shootings_per_tract <- shootings_sf %>%
+  st_join(tracts) %>%
+  count(GEOID10) %>%
+  rename(shootings_per_tract = n) %>%
+  st_drop_geometry()
+
+articles_per_tract <- shooting_articles_sf %>%
+  st_join(tracts) %>%
+  count(GEOID10) %>%
+  rename(articles_per_tract = n) %>%
+  st_drop_geometry()
+
+tract_level_data <- shootings_per_tract %>%
+  left_join(articles_per_tract) %>%
+  mutate(articles_per_tract = ifelse(is.na(articles_per_tract), 0, articles_per_tract),
+         shootings_quantile = ntile(shootings_per_tract, 2),
+         articles_quantile = ntile(articles_per_tract, 2))
+
+tract_level_data_sf <- tracts %>%
+  left_join(tract_level_data)
+
+bi_class_data <- bi_class(tract_level_data_sf, x = shootings_quantile, y = articles_quantile, style = "quantile", dim = 2)
+
+map0 <- ggplot(bi_class_data) +
+  geom_sf(aes(fill = bi_class), color = "white", size = 0.1, show.legend = FALSE) +
+  bi_scale_fill(pal = "DkBlue", dim = 2) +
+  bi_theme()
+
+bi_legend0 <- bi_legend(
+  pal = "DkBlue",
+  dim = 2,
+  xlab = "More shootings",
+  ylab = "More media",
+  size = 8
+)
+
+ggdraw() +
+  draw_plot(map0, 0, 0, 1, 1) +
+  draw_plot(bi_legend0, 0.45, 0.05, 0.25, 0.25)
+
+```
+
