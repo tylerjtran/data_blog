@@ -2165,7 +2165,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <div class="d-article">
-<p>I’ve jumped on the vibecoding train to build a browser-based tool to perform spatial joins. This is something that’s doable with any GIS software or a couple lines of R or python code, but it won’t require any technical setup and won’t expose your data to any nefarious actors.</p>
+<p>I’ve jumped on the vibecoding train to build a <a href="https://tyler-tran.com/spatialjoin/">browser-based tool to perform spatial joins</a>. This is something that’s doable with any GIS software or a couple lines of R or python code, but it won’t require any technical setup and won’t expose your data to any nefarious actors.</p>
 <p>The tool joins point data and polygon data. Let’s use an example from OpenDataPhilly: <a href="https://opendataphilly.org/datasets/shooting-victims/">the public shooting data set</a>. This data set has columns for longitude and latitude, but nothing to note which neighborhood, zip code, or City Council district each incident happened in.</p>
 <p>You could use this tool to map and output a CSV with zip code (or neighborhood, or whatever) in just a few clicks. This tool could work for anything with coordinate data: incident locations, real estate, participant location, you name it. And you can choose one of a few preset defaults for your polygons (Philadelphia zip codes, neighborhoods, City Council districts, PA State House and Senate Districts, or US States) or you can upload (or provide the URL to) your own files (in geojson or shapefile format).</p>
 <p>Below, I’ll walk you through the shooting data to zip code spatial join:</p>
@@ -2182,7 +2182,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <p><img src="screenshot3.png" width="100%" /></p>
 </div>
 <p>Last, you can download a new CSV. This’ll be the same as the CSV you uploaded except with new columns from the polygon data.</p>
-<p>Hope it’s useful!</p>
+<p><a href="https://tyler-tran.com/spatialjoin/">Check out the tool</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

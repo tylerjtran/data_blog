@@ -17,7 +17,7 @@ draft: false
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-I've jumped on the vibecoding train to build a browser-based tool to perform spatial joins. This is something that's doable with any GIS software or a couple lines of R or python code, but it won't require any technical setup and won't expose your data to any nefarious actors.
+I've jumped on the vibecoding train to build a [browser-based tool to perform spatial joins](https://tyler-tran.com/spatialjoin/). This is something that's doable with any GIS software or a couple lines of R or python code, but it won't require any technical setup and won't expose your data to any nefarious actors.
 
 The tool joins point data and polygon data. Let's use an example from OpenDataPhilly: [the public shooting data set](https://opendataphilly.org/datasets/shooting-victims/). This data set has columns for longitude and latitude, but nothing to note which neighborhood, zip code, or City Council district each incident happened in. 
 
@@ -48,4 +48,4 @@ knitr::include_graphics('screenshot3.png')
 
 Last, you can download a new CSV. This'll be the same as the CSV you uploaded except with new columns from the polygon data.
 
-Hope it's useful!
+[Check out the tool](https://tyler-tran.com/spatialjoin/).
